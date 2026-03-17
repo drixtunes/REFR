@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REFR — by Hendricks Creative</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://sdk.scdn.co/spotify-player.js"></script>
+<style>
+:root{
+  --bg:#0a0a0a;--s1:#141414;--s2:#1e1e1e;
+  --b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.15);
+  --tx:#f0f0f0;--t2:#888;--t3:#555;
+  --grn:#1DB954;--grn2:#1ed760;
+  --blue:#4a9eff;--red:#fc3c44;--yt:#FF0000;
+  --r:12px;--rs:8px;
+  --gold:#C9A84C;--goldD:rgba(201,168,76,0.15);--goldB:rgba(201,168,76,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{background:var(--bg);color:var(--tx);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body{max-width:760px;margin:0 auto;padding:2rem 1.5rem 5rem;}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:0.5px solid var(--b1);}
+.logo{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;letter-spacing:-1px;}
+.logo em{color:var(--grn);font-style:normal;}
+.tagline{font-size:12px;color:var(--t2);}
+.hc{display:flex;align-items:center;gap:8px;background:var(--goldD);border:0.5px solid var(--goldB);border-radius:8px;padding:6px 12px;}
+.hc-m{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--gold);letter-spacing:1px;}
+.hc-l{font-size:10px;color:var(--gold);opacity:0.7;letter-spacing:0.5px;text-transform:uppercase;}
+
+.guide{background:var(--s1);border:0.5px solid var(--b1);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
+.guide h3{font-size:12px;color:var(--grn);font-family:'DM Mono',monospace;margin-bottom:10px;}
+.guide ol{padding-left:1.2rem;}
+.guide li{font-size:13px;color:var(--t2);line-height:2.2;}
+.guide li strong{color:var(--tx);}
+.guide code{font-family:'DM Mono',monospace;background:var(--s2);padding:1px 6px;border-radius:4px;font-size:12px;color:var(--grn);}
+.guide a{color:var(--blue);}
+.divl{height:0.5px;background:var(--b1);margin:1rem 0;}
+
+.auth-box{background:var(--s1);border:0.5px solid var(--b1);border-radius:var(--r);padding:2rem;margin-bottom:1.5rem;text-align:center;}
+.auth-box h2{font-size:16px;font-weight:500;margin-bottom:8px;}
+.auth-box p{font-size:13px;color:var(--t2);margin-bottom:1.25rem;line-height:1.6;}
+.cid-row{display:flex;gap:8px;margin-bottom:1.25rem;}
+.cid-row input{flex:1;background:var(--s2);border:0.5px solid var(--b2);border-radius:var(--rs);padding:10px 12px;font-family:'DM Mono',monospace;font-size:13px;color:var(--tx);}
+.cid-row input:focus{outline:none;border-color:var(--grn);}
+.cid-row input::placeholder{color:var(--t3);}
+.sp-btn{display:inline-flex;align-items:center;gap:8px;background:var(--grn);color:#000;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;padding:11px 28px;border-radius:24px;border:none;cursor:pointer;transition:background 0.15s;}
+.sp-btn:hover{background:var(--grn2);}
+.sp-btn svg{width:18px;height:18px;}
+
+.lbar{display:flex;align-items:center;gap:10px;background:rgba(29,185,84,0.08);border:0.5px solid rgba(29,185,84,0.25);border-radius:var(--rs);padding:10px 14px;margin-bottom:1.5rem;font-size:13px;}
+.ldot{width:8px;height:8px;border-radius:50%;background:var(--grn);flex-shrink:0;}
+.lbar .dis{color:var(--t2);margin-left:auto;cursor:pointer;}
+.lbar .dis:hover{color:var(--tx);}
+.sdk-status{font-size:11px;font-family:'DM Mono',monospace;color:var(--t3);margin-left:8px;}
+.sdk-status.ready{color:var(--grn);}
+
+.step{background:var(--s1);border:0.5px solid var(--b1);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sn{font-family:'DM Mono',monospace;font-size:11px;color:var(--grn);border:0.5px solid rgba(29,185,84,0.3);border-radius:4px;padding:2px 6px;}
+.st{font-size:14px;font-weight:500;}
+
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:12px;color:var(--t2);}
+.field input{background:var(--s2);border:0.5px solid var(--b2);border-radius:var(--rs);padding:9px 12px;font-size:14px;color:var(--tx);font-family:'DM Sans',sans-serif;width:100%;}
+.field input:focus{outline:none;border-color:var(--grn);}
+.field input::placeholder{color:var(--t3);}
+.fnote{font-size:11px;color:var(--t3);margin-top:3px;}
+.fnote.on{color:var(--grn);}
+
+.ghint{font-size:12px;color:var(--t2);margin-bottom:10px;}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;margin-bottom:8px;}
+.gc{padding:7px 8px;border-radius:20px;border:0.5px solid var(--b2);font-size:13px;text-align:center;cursor:pointer;transition:all 0.15s;color:var(--t2);background:transparent;font-family:'DM Sans',sans-serif;}
+.gc:hover{border-color:var(--grn);color:var(--tx);}
+.gc.pri{background:var(--grn);border-color:var(--grn);color:#000;font-weight:500;}
+.gc.sec{background:rgba(29,185,84,0.15);border-color:rgba(29,185,84,0.4);color:var(--grn);}
+
+.trow{display:flex;gap:8px;margin-top:8px;}
+.trow input{flex:1;background:var(--s2);border:0.5px solid var(--b2);border-radius:var(--rs);padding:8px 12px;font-size:14px;color:var(--tx);font-family:'DM Sans',sans-serif;}
+.trow input:focus{outline:none;border-color:var(--grn);}
+.trow input::placeholder{color:var(--t3);}
+.trow button{padding:8px 14px;font-size:13px;border:0.5px solid var(--b2);border-radius:var(--rs);cursor:pointer;background:var(--s2);color:var(--tx);font-family:'DM Sans',sans-serif;}
+.trow button:hover{background:var(--b2);}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.chip{display:flex;align-items:center;gap:5px;padding:5px 10px;background:var(--s2);border:0.5px solid var(--b2);border-radius:20px;font-size:13px;}
+.cx{cursor:pointer;color:var(--t3);font-size:16px;line-height:1;}
+.cx:hover{color:var(--tx);}
+
+.go{width:100%;padding:15px;font-size:15px;font-weight:600;background:var(--grn);color:#000;border:none;border-radius:var(--rs);cursor:pointer;font-family:'DM Sans',sans-serif;transition:background 0.15s;margin-top:0.5rem;}
+.go:hover{background:var(--grn2);}
+
+.loading{text-align:center;padding:3rem;color:var(--t2);font-size:14px;}
+.spin{display:inline-block;width:22px;height:22px;border:2px solid var(--b2);border-top-color:var(--grn);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lsub{font-size:12px;color:var(--t3);margin-top:6px;font-family:'DM Mono',monospace;}
+
+.err{padding:14px 16px;background:rgba(255,69,58,0.1);border:0.5px solid rgba(255,69,58,0.3);border-radius:var(--rs);font-size:13px;color:#ff6b63;margin-top:12px;line-height:1.7;}
+.warn{padding:12px 16px;background:rgba(201,168,76,0.08);border:0.5px solid var(--goldB);border-radius:var(--rs);font-size:13px;color:var(--gold);margin-bottom:12px;}
+
+.results{margin-top:1.5rem;}
+.rt{font-size:13px;font-weight:500;color:var(--t2);font-family:'DM Mono',monospace;margin-bottom:12px;}
+.mpills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.pill{display:inline-flex;align-items:center;padding:5px 12px;background:var(--s2);border:0.5px solid var(--b1);border-radius:20px;font-size:12px;color:var(--t2);font-family:'DM Mono',monospace;}
+.pill.g{border-color:rgba(29,185,84,0.4);color:var(--grn);}
+.slabel{font-size:11px;color:var(--t3);font-family:'DM Mono',monospace;margin:16px 0 8px;letter-spacing:0.5px;}
+
+.tc{background:var(--s1);border:0.5px solid var(--b1);border-radius:var(--r);margin-bottom:8px;overflow:hidden;transition:border-color 0.15s;}
+.tc:hover{border-color:var(--b2);}
+.tc.seed{border-color:rgba(29,185,84,0.2);}
+.th{display:flex;align-items:center;gap:12px;padding:12px 14px;}
+.tnum{font-family:'DM Mono',monospace;font-size:12px;color:var(--t3);width:16px;text-align:right;flex-shrink:0;}
+.tart{width:44px;height:44px;border-radius:6px;object-fit:cover;flex-shrink:0;}
+.tartph{width:44px;height:44px;border-radius:6px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--t3);}
+.ti{flex:1;min-width:0;}
+.tn{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.tm{display:flex;align-items:center;gap:6px;margin-top:3px;flex-wrap:wrap;}
+.ta{font-size:12px;color:var(--t2);}
+.bb{font-size:10px;font-family:'DM Mono',monospace;color:var(--grn);background:rgba(29,185,84,0.1);border:0.5px solid rgba(29,185,84,0.25);border-radius:4px;padding:1px 5px;}
+.sb{font-size:10px;font-family:'DM Mono',monospace;color:var(--gold);background:var(--goldD);border:0.5px solid var(--goldB);border-radius:4px;padding:1px 5px;}
+.tact{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.pbtn{padding:6px 14px;background:var(--grn);color:#000;border:none;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.12s;white-space:nowrap;}
+.pbtn:hover{background:var(--grn2);}
+.pbtn.on{background:var(--s2);color:var(--tx);border:0.5px solid var(--b2);}
+.elinks{display:flex;gap:5px;}
+.el{padding:5px 9px;border-radius:6px;font-size:11px;font-weight:600;border:none;text-decoration:none;transition:opacity 0.12s;display:inline-block;font-family:'DM Sans',sans-serif;}
+.el:hover{opacity:0.85;}
+.el.am{background:var(--red);color:#fff;}
+.el.yt{background:var(--yt);color:#fff;}
+
+.pw{display:none;border-top:0.5px solid var(--b1);}
+.pw.open{display:block;}
+.pw iframe{display:block;width:100%;border:none;}
+
+.vbar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.96);backdrop-filter:blur(16px);border-top:0.5px solid var(--b2);padding:10px 24px;display:none;align-items:center;gap:14px;z-index:999;}
+.vbar.show{display:flex;}
+.vico{font-size:16px;cursor:pointer;flex-shrink:0;user-select:none;}
+.vnow{flex:1;min-width:0;font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vnow strong{color:var(--tx);font-weight:500;}
+input[type=range].vs{-webkit-appearance:none;appearance:none;width:140px;height:3px;border-radius:2px;background:var(--b2);outline:none;flex-shrink:0;cursor:pointer;}
+input[type=range].vs::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--grn);cursor:pointer;}
+input[type=range].vs::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--grn);border:none;cursor:pointer;}
+.vpct{font-family:'DM Mono',monospace;font-size:11px;color:var(--t2);width:32px;text-align:right;flex-shrink:0;}
+
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:0.5px solid var(--b1);display:flex;align-items:center;justify-content:space-between;}
+.fm{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--gold);letter-spacing:1px;}
+.fn{font-size:11px;color:var(--t3);}
+.fv{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;align-items:baseline;gap:14px;">
+    <div class="logo">RE<em>F</em>R</div>
+    <div class="tagline">AI reference track finder</div>
+  </div>
+  <div class="hc"><div class="hc-m">HC</div><div class="hc-l">Hendricks Creative</div></div>
+</div>
+
+<div class="guide" id="guide">
+  <h3>// one-time setup</h3>
+  <ol>
+    <li>Go to <a href="https://developer.spotify.com/dashboard" target="_blank">developer.spotify.com/dashboard</a> → open your app</li>
+    <li>Click <strong>Edit Settings</strong> → Redirect URIs → add <code>https://drixtunes.github.io/REFR/</code> → Save</li>
+    <li>Paste your <strong>Client ID</strong> below and click Connect</li>
+  </ol>
+  <div class="divl"></div>
+  <p style="font-size:12px;color:var(--t3);">Requires Spotify Premium for full quality SDK playback.</p>
+</div>
+
+<div id="authWrap">
+  <div class="auth-box">
+    <h2>Connect your Spotify account</h2>
+    <p>Paste your Client ID below — no Client Secret needed.</p>
+    <div class="cid-row">
+      <input type="text" id="cidInput" placeholder="Paste Spotify Client ID here..." />
+    </div>
+    <button class="sp-btn" onclick="startAuth()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      Connect with Spotify
+    </button>
+  </div>
+</div>
+
+<div id="loggedBar" style="display:none" class="lbar">
+  <div class="ldot"></div>
+  <span style="font-size:13px;">Connected to Spotify</span>
+  <span class="sdk-status" id="sdkStatus">· player loading...</span>
+  <span class="dis" onclick="logout()">Disconnect</span>
+</div>
+
+<div id="app" style="display:none">
+  <div class="step">
+    <div class="sh"><span class="sn">01</span><span class="st">Describe your sound</span></div>
+    <div class="frow">
+      <div class="field">
+        <label>Your BPM</label>
+        <input type="number" id="bpmIn" placeholder="e.g. 95" min="40" max="220" oninput="onBpm()"/>
+        <div class="fnote" id="bpmNote">Enter BPM to filter results to ±5 BPM</div>
+      </div>
+      <div class="field">
+        <label>Vibe / mood (optional)</label>
+        <input type="text" id="moodIn" placeholder="e.g. dark, chill, aggressive..."/>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sh"><span class="sn">02</span><span class="st">Select your genre</span></div>
+    <div class="ghint">First click = <strong style="color:var(--grn)">Primary</strong> · Second = Secondary · Third = Remove</div>
+    <div class="gg" id="genreGrid"></div>
+    <div class="trow">
+      <input type="text" id="cgIn" placeholder="Custom genre..." onkeydown="if(event.key==='Enter')addCG()"/>
+      <button onclick="addCG()">Add</button>
+    </div>
+    <div class="chips" id="cgChips"></div>
+  </div>
+
+  <div class="step">
+    <div class="sh"><span class="sn">03</span><span class="st">Artists that sound like you</span></div>
+    <p style="font-size:13px;color:var(--t2);margin-bottom:10px;">REFR finds similar artists in your genre + a few tracks from your artists</p>
+    <div class="trow">
+      <input type="text" id="artistIn" placeholder="e.g. Linkin Park, Bring Me The Horizon..." onkeydown="if(event.key==='Enter')addArtist()"/>
+      <button onclick="addArtist()">Add</button>
+    </div>
+    <div class="chips" id="artistChips"></div>
+  </div>
+
+  <button class="go" onclick="findTracks()">Find my reference tracks</button>
+  <div id="out"></div>
+</div>
+
+<div class="vbar" id="vbar">
+  <span class="vico" id="vico" onclick="toggleMute()">🔊</span>
+  <div class="vnow" id="vnow"><strong>—</strong></div>
+  <input type="range" class="vs" id="vslider" min="0" max="100" value="80" oninput="setVol(this.value)"/>
+  <span class="vpct" id="vpct">80%</span>
+</div>
+
+<div class="footer">
+  <div style="display:flex;align-items:center;gap:8px;">
+    <div class="fm">HC</div><div class="fn">Hendricks Creative</div>
+  </div>
+  <div class="fv">REFR v3.0</div>
+</div>
+
+<script>
+// ── Config ───────────────────────────────────────────────────────────────────
+var REDIRECT = 'https://drixtunes.github.io/REFR/';
+var BPM_TOL  = 5;
+var GENRES   = ['Pop','Rock','Hip-Hop','R&B','Electronic','Jazz','Classical','Country','Metal','Indie','Soul','Folk','Reggae','Blues','Latin','Punk','Trap','House','Ambient','Gospel'];
+
+// ── State ────────────────────────────────────────────────────────────────────
+var token=null, gState={}, cGenres=[], artists=[], tInfo={};
+var openId=null, vol=80, muted=false, lastVol=80;
+var sdkPlayer=null, sdkReady=false, sdkDeviceId=null, progTimer=null;
+
+// ── Spotify Web Playback SDK ─────────────────────────────────────────────────
+window.onSpotifyWebPlaybackSDKReady = function() {
+  if (!token) return;
+  sdkPlayer = new Spotify.Player({
+    name: 'REFR by Hendricks Creative',
+    getOAuthToken: function(cb) { cb(token); },
+    volume: vol / 100
+  });
+
+  sdkPlayer.addListener('ready', function(d) {
+    sdkReady = true;
+    sdkDeviceId = d.device_id;
+    var s = document.getElementById('sdkStatus');
+    if (s) { s.textContent = '· player ready'; s.className = 'sdk-status ready'; }
+    console.log('REFR SDK ready:', sdkDeviceId);
+  });
+
+  sdkPlayer.addListener('not_ready', function() {
+    sdkReady = false;
+    var s = document.getElementById('sdkStatus');
+    if (s) { s.textContent = '· player offline'; s.className = 'sdk-status'; }
+  });
+
+  sdkPlayer.addListener('player_state_changed', function(state) {
+    if (!state) return;
+    var fill = document.getElementById('progFill');
+    if (fill && state.duration) fill.style.width = ((state.position / state.duration) * 100) + '%';
+    var pp = document.getElementById('sdkPP');
+    if (pp) pp.textContent = state.paused ? '▶' : '⏸';
+    var ct = state.track_window && state.track_window.current_track;
+    if (ct) {
+      var artEl = document.getElementById('sdkArt');
+      var nameEl = document.getElementById('sdkName');
+      var artistEl = document.getElementById('sdkArtist');
+      var art = ct.album && ct.album.images && ct.album.images[0] ? ct.album.images[0].url : '';
+      if (artEl && art) artEl.src = art;
+      if (nameEl) nameEl.textContent = ct.name;
+      if (artistEl) artistEl.textContent = ct.artists.map(function(a){return a.name;}).join(', ');
+    }
+  });
+
+  sdkPlayer.addListener('initialization_error', function(e) { console.error('SDK init error:', e.message); });
+  sdkPlayer.addListener('authentication_error', function(e) { console.error('SDK auth error:', e.message); });
+  sdkPlayer.addListener('account_error', function(e) { console.error('SDK account error:', e.message); });
+
+  sdkPlayer.connect();
+};
+
+async function playTrack(trackId) {
+  if (!sdkReady || !sdkDeviceId) {
+    alert('Player still loading — wait a moment and try again.');
+    return;
+  }
+  try {
+    // Transfer playback to REFR
+    await fetch('https://api.spotify.com/v1/me/player', {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_ids: [sdkDeviceId], play: false })
+    });
+    await delay(300);
+    // Play the track
+    await fetch('https://api.spotify.com/v1/me/player/play?device_id=' + sdkDeviceId, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uris: ['spotify:track:' + trackId] })
+    });
+    // Poll progress every 500ms
+    if (progTimer) clearInterval(progTimer);
+    progTimer = setInterval(function() {
+      if (sdkPlayer) sdkPlayer.getCurrentState().then(function(s) {
+        if (!s) return;
+        var fill = document.getElementById('progFill');
+        if (fill && s.duration) fill.style.width = ((s.position / s.duration) * 100) + '%';
+        var pp = document.getElementById('sdkPP');
+        if (pp) pp.textContent = s.paused ? '▶' : '⏸';
+      });
+    }, 500);
+  } catch(e) {
+    console.error('playTrack error:', e);
+  }
+}
+
+function togglePP() { if (sdkPlayer) sdkPlayer.togglePlay(); }
+
+function seekTo(e, bar) {
+  if (!sdkPlayer) return;
+  sdkPlayer.getCurrentState().then(function(s) {
+    if (!s) return;
+    sdkPlayer.seek(Math.floor((e.offsetX / bar.offsetWidth) * s.duration));
+  });
+}
+
+// ── Volume ────────────────────────────────────────────────────────────────────
+function setVol(v) {
+  vol = parseInt(v);
+  document.getElementById('vpct').textContent = vol + '%';
+  if (vol > 0) { muted = false; lastVol = vol; }
+  updateVIcon();
+  if (sdkPlayer) sdkPlayer.setVolume((muted ? 0 : vol) / 100);
+}
+function toggleMute() {
+  muted = !muted;
+  var s = document.getElementById('vslider');
+  if (muted) { lastVol = vol; s.value = 0; document.getElementById('vpct').textContent = '0%'; }
+  else { s.value = lastVol; vol = lastVol; document.getElementById('vpct').textContent = lastVol + '%'; }
+  updateVIcon();
+  if (sdkPlayer) sdkPlayer.setVolume(muted ? 0 : vol / 100);
+}
+function updateVIcon() {
+  var v = muted ? 0 : vol;
+  document.getElementById('vico').textContent = v === 0 ? '🔇' : v < 40 ? '🔈' : v < 70 ? '🔉' : '🔊';
+}
+function showVBar(name, artist) {
+  document.getElementById('vnow').innerHTML = '<strong>' + name + '</strong> · ' + artist;
+  document.getElementById('vbar').classList.add('show');
+}
+function hideVBar() { document.getElementById('vbar').classList.remove('show'); }
+
+// ── Player toggle ─────────────────────────────────────────────────────────────
+function play(id) {
+  var btn  = document.getElementById('pb-' + id);
+  var wrap = document.getElementById('pw-' + id);
+  var isOpen = wrap.classList.contains('open');
+
+  if (openId && openId !== id) {
+    var pw = document.getElementById('pw-' + openId);
+    var pb = document.getElementById('pb-' + openId);
+    if (pw) { pw.classList.remove('open'); pw.innerHTML = ''; }
+    if (pb) { pb.textContent = '▶ Play'; pb.classList.remove('on'); }
+  }
+
+  if (isOpen) {
+    wrap.classList.remove('open'); wrap.innerHTML = '';
+    btn.textContent = '▶ Play'; btn.classList.remove('on');
+    if (sdkPlayer) sdkPlayer.pause();
+    if (progTimer) clearInterval(progTimer);
+    openId = null; hideVBar();
+  } else {
+    var info = tInfo[id] || { name: '—', artist: '—', art: '' };
+    wrap.classList.add('open');
+    wrap.innerHTML =
+      '<div style="padding:12px 14px;">' +
+        '<div style="display:flex;align-items:center;gap:12px;">' +
+          '<img id="sdkArt" src="' + (info.art||'') + '" style="width:40px;height:40px;border-radius:6px;object-fit:cover;background:var(--s2);flex-shrink:0;" alt="">' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div id="sdkName" style="font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + info.name + '</div>' +
+            '<div id="sdkArtist" style="font-size:11px;color:var(--t2);margin-top:2px;">' + info.artist + '</div>' +
+          '</div>' +
+          '<button id="sdkPP" onclick="togglePP()" style="width:34px;height:34px;border-radius:50%;background:var(--grn);border:none;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">▶</button>' +
+        '</div>' +
+        '<div onclick="seekTo(event,this)" style="width:100%;height:3px;background:var(--b2);border-radius:2px;margin-top:10px;cursor:pointer;position:relative;">' +
+          '<div id="progFill" style="height:3px;background:var(--grn);border-radius:2px;width:0%;pointer-events:none;transition:width 0.5s linear;"></div>' +
+        '</div>' +
+      '</div>';
+    btn.textContent = '■ Stop'; btn.classList.add('on');
+    openId = id;
+    playTrack(id);
+    showVBar(info.name, info.artist);
+  }
+}
+
+// ── PKCE Auth ─────────────────────────────────────────────────────────────────
+function rndStr(n) {
+  var c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  var a = new Uint8Array(n); crypto.getRandomValues(a);
+  return Array.from(a, function(b) { return c[b % c.length]; }).join('');
+}
+async function mkChallenge(v) {
+  var d = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+  return btoa(String.fromCharCode.apply(null, new Uint8Array(d)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+
+async function startAuth() {
+  var cid = document.getElementById('cidInput').value.trim();
+  if (!cid) { alert('Please paste your Spotify Client ID first.'); return; }
+  localStorage.setItem('refr_cid', cid);
+  var ver = rndStr(64);
+  localStorage.setItem('refr_ver', ver);
+  var ch = await mkChallenge(ver);
+  window.location.href = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
+    client_id: cid, response_type: 'code', redirect_uri: REDIRECT,
+    scope: 'user-read-private streaming user-read-email',
+    code_challenge_method: 'S256', code_challenge: ch, show_dialog: 'true'
+  }).toString();
+}
+
+function showAuth() {
+  document.getElementById('authWrap').style.display  = 'block';
+  document.getElementById('loggedBar').style.display = 'none';
+  document.getElementById('app').style.display       = 'none';
+  document.getElementById('guide').style.display     = 'block';
+}
+function showApp() {
+  document.getElementById('authWrap').style.display  = 'none';
+  document.getElementById('loggedBar').style.display = 'flex';
+  document.getElementById('app').style.display       = 'block';
+  document.getElementById('guide').style.display     = 'none';
+  // Init SDK now that we have a token
+  if (window.Spotify && !sdkPlayer) window.onSpotifyWebPlaybackSDKReady();
+}
+function logout() {
+  localStorage.removeItem('refr_tok'); localStorage.removeItem('refr_exp');
+  token = null;
+  if (sdkPlayer) { sdkPlayer.disconnect(); sdkPlayer = null; sdkReady = false; }
+  showAuth();
+}
+
+async function init() {
+  buildGrid();
+  var saved = localStorage.getItem('refr_cid');
+  if (saved) document.getElementById('cidInput').value = saved;
+
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('error')) { showAuth(); return; }
+
+  var code = params.get('code');
+  if (code) {
+    var ver = localStorage.getItem('refr_ver');
+    var cid = localStorage.getItem('refr_cid');
+    if (ver && cid) {
+      try {
+        var r = await fetch('https://accounts.spotify.com/api/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code', code: code,
+            redirect_uri: REDIRECT, client_id: cid, code_verifier: ver
+          })
+        });
+        var data = await r.json();
+        if (data.access_token) {
+          token = data.access_token;
+          localStorage.setItem('refr_tok', data.access_token);
+          localStorage.setItem('refr_exp', Date.now() + data.expires_in * 1000);
+          localStorage.removeItem('refr_ver');
+          window.history.replaceState({}, document.title, REDIRECT);
+          showApp(); return;
+        }
+      } catch(e) { console.error('Token exchange error:', e); }
+    }
+    showAuth(); return;
+  }
+
+  var t = localStorage.getItem('refr_tok');
+  var ex = localStorage.getItem('refr_exp');
+  if (t && ex && Date.now() < parseInt(ex)) { token = t; showApp(); return; }
+  showAuth();
+}
+
+// ── Genre ────────────────────────────────────────────────────────────────────
+function buildGrid() {
+  var g = document.getElementById('genreGrid');
+  GENRES.forEach(function(n) {
+    var c = document.createElement('div');
+    c.className = 'gc'; c.textContent = n; c.id = 'gc-' + n;
+    c.onclick = function() { cycleGenre(n, c); };
+    g.appendChild(c);
+  });
+}
+function cycleGenre(n, c) {
+  var s = gState[n];
+  if (!s) { gState[n]='pri'; c.classList.add('pri'); c.classList.remove('sec'); }
+  else if (s==='pri') { gState[n]='sec'; c.classList.add('sec'); c.classList.remove('pri'); }
+  else { gState[n]=null; c.classList.remove('pri','sec'); }
+}
+function getPri() { return Object.keys(gState).filter(function(k){return gState[k]==='pri';}); }
+function getSec() { return Object.keys(gState).filter(function(k){return gState[k]==='sec';}); }
+
+function addCG() {
+  var v = document.getElementById('cgIn').value.trim();
+  if (!v || cGenres.indexOf(v) !== -1) return;
+  cGenres.push(v); renderCG(); document.getElementById('cgIn').value = '';
+}
+function rmCG(g) { cGenres = cGenres.filter(function(x){return x!==g;}); renderCG(); }
+function renderCG() {
+  var c = document.getElementById('cgChips'); c.innerHTML = '';
+  cGenres.forEach(function(g) {
+    var el = document.createElement('div'); el.className = 'chip';
+    el.innerHTML = '<span>'+g+'</span><span class="cx" onclick="rmCG(\''+g.replace(/'/g,"\\'")+'\')">&times;</span>';
+    c.appendChild(el);
+  });
+}
+function addArtist() {
+  var v = document.getElementById('artistIn').value.trim();
+  if (!v || artists.indexOf(v) !== -1 || artists.length >= 5) return;
+  artists.push(v); renderArtists(); document.getElementById('artistIn').value = '';
+}
+function rmArtist(a) { artists = artists.filter(function(x){return x!==a;}); renderArtists(); }
+function renderArtists() {
+  var c = document.getElementById('artistChips'); c.innerHTML = '';
+  artists.forEach(function(a) {
+    var el = document.createElement('div'); el.className = 'chip';
+    el.innerHTML = '<span>'+a+'</span><span class="cx" onclick="rmArtist(\''+a.replace(/'/g,"\\'")+'\')">&times;</span>';
+    c.appendChild(el);
+  });
+}
+function onBpm() {
+  var v = document.getElementById('bpmIn').value;
+  var n = document.getElementById('bpmNote');
+  if (v) { n.textContent = 'Filtering '+( parseInt(v)-BPM_TOL)+'-'+(parseInt(v)+BPM_TOL)+' BPM via ReccoBeats'; n.className='fnote on'; }
+  else   { n.textContent = 'Enter BPM to filter results to ±5 BPM'; n.className='fnote'; }
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+function delay(ms) { return new Promise(function(r){ setTimeout(r, ms); }); }
+
+async function spotifyGet(path) {
+  var r = await fetch('https://api.spotify.com/v1' + path, {
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  if (r.status === 401) { logout(); throw new Error('Session expired — please reconnect.'); }
+  var txt = await r.text();
+  return txt ? JSON.parse(txt) : null;
+}
+
+// Spotify Feb 2026: max limit = 10 per request
+async function search(q, offset) {
+  var clean = q.replace(/[,;]+/g,' ').replace(/\s+/g,' ').trim();
+  if (!clean) return [];
+  var d = await spotifyGet('/search?q='+encodeURIComponent(clean)+'&type=track&limit=10&offset='+(offset||0)+'&market=US');
+  return (d && d.tracks && d.tracks.items ? d.tracks.items : [])
+    .filter(function(t){ return t && t.id && t.name && t.artists && t.artists.length; });
+}
+
+async function searchMany(q, pages) {
+  var all = [], seen = new Set();
+  for (var i = 0; i < (pages||5); i++) {
+    try {
+      var tracks = await search(q, i * 10);
+      if (!tracks.length) break;
+      tracks.forEach(function(t) { if (!seen.has(t.id)) { seen.add(t.id); all.push(t); } });
+      if (i < (pages||5)-1) await delay(150);
+    } catch(e) { break; }
+  }
+  return all;
+}
+
+// ReccoBeats — free BPM API (Spotify audio-features deprecated for new apps)
+async function getBpm(trackId) {
+  try {
+    var r = await fetch('https://api.reccobeats.com/v1/track/' + trackId + '/audio-features');
+    if (!r.ok) return null;
+    var d = await r.json();
+    return d && d.tempo ? d.tempo : null;
+  } catch(e) { return null; }
+}
+
+async function getBpmBatch(ids) {
+  var map = {};
+  for (var i = 0; i < ids.length; i += 5) {
+    var batch = ids.slice(i, i+5);
+    var results = await Promise.all(batch.map(function(id) {
+      return getBpm(id).then(function(t) { return { id: id, tempo: t }; });
+    }));
+    results.forEach(function(r) { if (r.tempo) map[r.id] = r.tempo; });
+    if (i + 5 < ids.length) await delay(300);
+  }
+  return map;
+}
+
+// ── Main search ────────────────────────────────────────────────────────────────
+async function findTracks() {
+  var out   = document.getElementById('out');
+  var pri   = getPri(), sec = getSec();
+  var allG  = pri.concat(sec).concat(cGenres);
+  var mood  = document.getElementById('moodIn').value.replace(/[,;]+/g,' ').replace(/\s+/g,' ').trim();
+  var bpmRaw= document.getElementById('bpmIn').value.trim();
+  var tBpm  = bpmRaw ? parseFloat(bpmRaw) : null;
+
+  if (!allG.length && !artists.length) {
+    out.innerHTML = '<div class="err">Please select a genre or add at least one artist.</div>';
+    return;
+  }
+
+  out.innerHTML = '<div class="loading"><div class="spin"></div><br>Searching Spotify...<div class="lsub" id="lsub">Building track pool...</div></div>';
+  function setMsg(m) { var el=document.getElementById('lsub'); if(el) el.textContent=m; }
+
+  try {
+    var seen=new Set(), disc=[], seed=[];
+    var seedNames=new Set(artists.map(function(a){return a.toLowerCase();}));
+    var g1=pri[0]||cGenres[0]||'', g2=sec[0]||pri[1]||'';
+
+    function addTo(arr,tracks) {
+      tracks.forEach(function(t){ if(!seen.has(t.id)){seen.add(t.id);arr.push(t);} });
+    }
+
+    // Discovery pool
+    setMsg('Searching by genre...');
+    var dq = [];
+    if (g1) dq.push(g1);
+    if (g2) dq.push(g2);
+    artists.forEach(function(a) {
+      if (g1) dq.push(g1+' '+a);
+      if (g2) dq.push(g2+' '+a);
+      if (mood && g1) dq.push(g1+' '+mood);
+    });
+    if (mood) dq.push(mood);
+
+    for (var qi=0; qi<dq.length; qi++) {
+      addTo(disc, await searchMany(dq[qi], 5));
+      if (disc.length > 80) break;
+      await delay(150);
+    }
+
+    // Strip out tracks by seed artists
+    disc = disc.filter(function(t) {
+      return !t.artists.some(function(a){ return seedNames.has(a.name.toLowerCase()); });
+    });
+
+    // Seed pool — tracks BY your artists
+    setMsg('Fetching your artists\' tracks...');
+    for (var ai=0; ai<artists.length; ai++) {
+      addTo(seed, await searchMany(artists[ai], 5));
+      if (ai < artists.length-1) await delay(150);
+    }
+    seed = seed.filter(function(t) {
+      return t.artists.some(function(a){ return seedNames.has(a.name.toLowerCase()); });
+    });
+
+    console.log('Pool: disc='+disc.length+' seed='+seed.length);
+
+    // BPM filter via ReccoBeats
+    var bpmFiltered=false, bpmFallback=false;
+    var discOrig=disc.slice(), seedOrig=seed.slice();
+
+    if (tBpm) {
+      setMsg('Checking BPM via ReccoBeats...');
+      var allIds = disc.concat(seed).map(function(t){return t.id;});
+      // Only check first 40 to avoid rate limits — enough to get 10 results
+      var checkIds = allIds.slice(0, 40);
+      var fmap = await getBpmBatch(checkIds);
+      var hasData = Object.keys(fmap).length > 0;
+      console.log('ReccoBeats returned BPM for '+Object.keys(fmap).length+'/'+checkIds.length+' tracks');
+
+      if (hasData) {
+        bpmFiltered = true;
+        function bpmOk(t) {
+          var bpm = fmap[t.id];
+          if (!bpm) return true; // no data = keep
+          return Math.abs(bpm-tBpm)<=BPM_TOL
+              || Math.abs(bpm/2-tBpm)<=BPM_TOL
+              || Math.abs(bpm*2-tBpm)<=BPM_TOL;
+        }
+        disc = disc.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});}).filter(bpmOk);
+        seed = seed.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});}).filter(bpmOk);
+
+        // If BPM filter too strict, fall back
+        if (!disc.length && !seed.length) {
+          disc = discOrig; seed = seedOrig;
+          bpmFiltered = false; bpmFallback = true;
+        }
+      } else {
+        bpmFallback = true;
+      }
+    }
+
+    // Shuffle + slice
+    disc = disc.sort(function(){return Math.random()-.5;});
+    seed = seed.sort(function(){return Math.random()-.5;});
+    var df=disc.slice(0,7), sf=seed.slice(0,3);
+
+    if (!df.length && !sf.length) {
+      out.innerHTML='<div class="err">No tracks found. Try a different genre or artist name.</div>';
+      return;
+    }
+
+    // Render
+    var pills='';
+    if (tBpm&&bpmFiltered) pills+='<div class="pill g">'+tBpm+' BPM ±'+BPM_TOL+'</div>';
+    else if (tBpm)         pills+='<div class="pill">'+tBpm+' BPM</div>';
+    if (g1) pills+='<div class="pill g">'+g1+'</div>';
+    if (g2) pills+='<div class="pill">'+g2+'</div>';
+    if (mood) pills+='<div class="pill">'+mood+'</div>';
+    if (artists.length) pills+='<div class="pill">style: '+artists.join(', ')+'</div>';
+
+    var html='<div class="results">'
+      +'<div class="rt">// '+(df.length+sf.length)+' reference tracks'+(bpmFiltered?' · ±'+BPM_TOL+' BPM of '+tBpm:'')+' — ▶ Play to listen</div>'
+      +(bpmFallback?'<div class="warn">BPM data limited — showing best matches without strict BPM filter.</div>':'')
+      +'<div class="mpills">'+pills+'</div>';
+
+    if (df.length) {
+      html+='<div class="slabel">// similar artists in your genre</div>';
+      df.forEach(function(t,i){html+=makeCard(t,i+1,false);});
+    }
+    if (sf.length) {
+      html+='<div class="slabel">// your reference artists</div>';
+      sf.forEach(function(t,i){html+=makeCard(t,df.length+i+1,true);});
+    }
+    html+='</div>';
+    out.innerHTML=html;
+
+  } catch(e) {
+    out.innerHTML='<div class="err">'+(e.message||'Something went wrong — please try again.')+'</div>';
+    console.error(e);
+  }
+}
+
+function makeCard(t, num, isSeed) {
+  var id=t.id, name=t.name;
+  var artist=t.artists.map(function(a){return a.name;}).join(', ');
+  var q=encodeURIComponent(name+' '+artist);
+  var art=t.album&&t.album.images&&(t.album.images[1]||t.album.images[0])?(t.album.images[1]||t.album.images[0]).url:'';
+  var bpmN=t._bpm?Math.round(t._bpm):null;
+  tInfo[id]={name:name,artist:artist,art:art};
+  var bb=bpmN?'<span class="bb">'+bpmN+' BPM</span>':'';
+  var sb=isSeed?'<span class="sb">your pick</span>':'';
+  return '<div class="tc'+(isSeed?' seed':'')+'">'+
+    '<div class="th">'+
+      '<div class="tnum">'+num+'</div>'+
+      (art?'<img class="tart" src="'+art+'" alt="">':'<div class="tartph">♫</div>')+
+      '<div class="ti">'+
+        '<div class="tn">'+name+'</div>'+
+        '<div class="tm"><span class="ta">'+artist+'</span>'+bb+sb+'</div>'+
+      '</div>'+
+      '<div class="tact">'+
+        '<button class="pbtn" id="pb-'+id+'" onclick="play(\''+id+'\')">▶ Play</button>'+
+        '<div class="elinks">'+
+          '<a class="el am" href="https://music.apple.com/us/search?term='+q+'" target="_blank">Apple</a>'+
+          '<a class="el yt" href="https://music.youtube.com/search?q='+q+'" target="_blank">YT</a>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="pw" id="pw-'+id+'"></div>'+
+  '</div>';
+}
+
+init();
+</script>
+</body>
+</html>
