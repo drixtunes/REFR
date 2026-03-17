@@ -693,21 +693,39 @@ async function findTracks() {
       console.log('ReccoBeats returned BPM for '+Object.keys(fmap).length+'/'+checkIds.length+' tracks');
 
       if (hasData) {
-        bpmFiltered = true;
-        function bpmOk(t) {
-          var bpm = fmap[t.id];
-          if (!bpm) return true; // no data = keep
-          return Math.abs(bpm-tBpm)<=BPM_TOL
-              || Math.abs(bpm/2-tBpm)<=BPM_TOL
-              || Math.abs(bpm*2-tBpm)<=BPM_TOL;
-        }
-        disc = disc.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});}).filter(bpmOk);
-        seed = seed.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});}).filter(bpmOk);
+        // Attach BPM data to tracks
+        disc = disc.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});});
+        seed = seed.map(function(t){return Object.assign({},t,{_bpm:fmap[t.id]||null});});
 
-        // If BPM filter too strict, fall back
-        if (!disc.length && !seed.length) {
-          disc = discOrig; seed = seedOrig;
-          bpmFiltered = false; bpmFallback = true;
+        // Only apply strict filter if we have BPM data for at least 30% of tracks
+        var tracksWithBpm = disc.concat(seed).filter(function(t){return t._bpm;}).length;
+        var totalTracks = disc.length + seed.length;
+        var coverage = totalTracks > 0 ? tracksWithBpm / totalTracks : 0;
+        console.log('BPM coverage: '+Math.round(coverage*100)+'%');
+
+        if (coverage >= 0.3) {
+          bpmFiltered = true;
+          function bpmOk(t) {
+            var bpm = t._bpm;
+            if (!bpm) return true; // no data = keep
+            return Math.abs(bpm-tBpm)<=BPM_TOL
+                || Math.abs(bpm/2-tBpm)<=BPM_TOL
+                || Math.abs(bpm*2-tBpm)<=BPM_TOL;
+          }
+          var discFiltered = disc.filter(bpmOk);
+          var seedFiltered = seed.filter(bpmOk);
+          // Only use filtered results if we still have enough tracks
+          if (discFiltered.length + seedFiltered.length >= 5) {
+            disc = discFiltered;
+            seed = seedFiltered;
+          } else {
+            // Not enough after filtering — show all with BPM badges but no strict filter
+            bpmFiltered = false;
+            bpmFallback = true;
+          }
+        } else {
+          // Not enough BPM coverage to filter reliably
+          bpmFallback = true;
         }
       } else {
         bpmFallback = true;
